@@ -2,29 +2,37 @@ var npm = require('npm'),
     q = require('q'),
     request = require('request'),
 
-    registryUrl = 'https://registry.npmjs.org/';
+    registryUrl = 'https://registry.npmjs.org/',
+    typeAheadUrl = 'https://typeahead.npmjs.com/search';
 
-var npmLoadedDefer = q.defer(),
-    npmLoaded = npmLoadedDefer.promise;
+// required for oldSearch... that is too slow...
+// var npmLoadedDefer = q.defer(),
+//     npmLoaded = npmLoadedDefer.promise;
 
-npm.load({}, function (er) {
-  if (er) return console.error('npm load error::', err);
-  npmLoadedDefer.resolve();
-})
+// npm.load({}, function (er) {
+//   if (er) return console.error('npm load error::', err);
+//   npmLoadedDefer.resolve();
+// })
 
 module.exports = {
   // too slow
+  // oldSearch: function (query) {
+  // npmLoaded.then(function () {
+    //   npm.commands.search([query], function (err, packages) {
+    //     if (err) { searchDef.reject(err); return; }
+    //     // why there are no rest api... why... why...
+
+    //     searchDef.resolve(packages);
+    //   });
+    // });
+  // }
   search: function (query) {
     var searchDef = q.defer();
-    npmLoaded.then(function () {
-      npm.commands.search([query], function (err, packages) {
-        if (err) { searchDef.reject(err); return; }
-        // why there are no rest api... why... why...
-        // remove first line (header)
-
-        searchDef.resolve(packages);
-      });
+    request.get({url: typeAheadUrl, qs: {q: query}, json:true}, function (e, r, data) {
+      if (e) { searchDef.reject(e); return; }
+      searchDef.resolve(data.map(function(item) { return item.value; }));
     });
+
     return searchDef.promise;
   },
 
