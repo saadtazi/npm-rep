@@ -30,7 +30,8 @@ module.exports = {
     var searchDef = q.defer();
     request.get({url: typeAheadUrl, qs: {q: query}, json:true}, function (e, r, data) {
       if (e) { searchDef.reject(e); return; }
-      searchDef.resolve(data.map(function(item) { return item.value; }));
+      // searchDef.resolve(data.map(function(item) { return item.value; }));
+      searchDef.resolve(data);
     });
 
     return searchDef.promise;

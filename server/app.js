@@ -50,12 +50,14 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-app.get('/api/packages/search', function (req, res){
+// search package names
+app.get('/api/packages', function (req, res){
   var q = req.query.q;
-  npm.search(q).then(
+  if (!q) { return res.json({});}
+  npm.search('*' + q).then(
     function (packages) {
       res.json({items: packages});
-    },
+    }).fail(
     function (err) {
       res.json({error: err});
     });
@@ -66,21 +68,16 @@ app.get('/api/packages/:packageName', function (req, res){
   npm.getPackage(req.params.packageName).then(
     function (packageInfo) {
       res.json(packageInfo);
-    },
-    function (err) {
+    }).fail(function (err) {
       res.json({error: err});
     });
 });
 
-app.get('/api/packages/:packageName/stats', function (req, res){
+app.get('/api/package-stats/:packageName', function (req, res){
   npm.getPackageStats(req.params.packageName).then(
     function (packageStats) {
-      console.log(promise.inspect());
-      console.log('ici packageStats');
       res.json(packageStats);
-    },
-    function (err) {
-      console.log(promise.inspect());
+    }).fail(function (err) {
       res.json({error: err});
     });
 });
