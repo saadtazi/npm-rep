@@ -1,6 +1,7 @@
 var npm = require('npm'),
     q = require('q'),
     request = require('request'),
+    prettyDate = require('pretty-date'),
 
     registryUrl = 'https://registry.npmjs.org/',
     typeAheadUrl = 'https://typeahead.npmjs.com/search';
@@ -50,21 +51,26 @@ module.exports = {
 
     return this.getPackage(packageName).then(
       function (data) {
+        try {
         var lastVersion = data['dist-tags'].latest;
         lastPackage = data.versions[lastVersion];
         return {
           name: data.name,
+          description: data.description,
           lastVersion: lastVersion,
           nbDependencies: lastPackage.dependencies && lastPackage.dependencies.length,
           nbContributors: data.contributors && data.contributors.length,
           created: data.time.created,
           modified: data.time.modified,
+          prettyCreated: prettyDate.format(new Date(data.time.created)),
+          prettyModified: prettyDate.format(new Date(data.time.modified)),
           repository: data.repository,
           repositoryUrl: data.repository && data.repository.url,
           homePage: data.homepage,
           author: data.author,
-          authorName: data.author.name
+          authorName: data.author && data.author.name
         };
+      } catch (e) {console.log('err', e);}
       }
     );
     return statsDef.promise;

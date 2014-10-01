@@ -1,16 +1,20 @@
 var q = require('q'),
-    GithubApi = require('github');
+    GithubApi = require('github'),
+    prettyDate = require('pretty-date');
 
 var github = new GithubApi({
     // required
     version: '3.0.0',
-    debug: true
+    // debug: true
 });
 
 
 module.exports = {
+  isGithub: function (url) {
+    return url.indexOf('github.com') > -1;
+  },
   parseUrl: function (url) {
-    var urlInfo = url.replace('.git', '').split('/').slice(-2);
+    var urlInfo = url.replace('.git', '').replace('github.com:', 'github.com/').split('/').slice(-2);
     return {
       user: urlInfo[0],
       repo: urlInfo[1]
@@ -26,22 +30,16 @@ module.exports = {
   },
 
   getRepoStats: function (repo) {
-    //   - fork: false (show only if true)
-    //   - created_at
-    //   - updated_at
-    //   - pushed_at
-    //   - stargazers_count
-    //   - watchers_count
-    //   - has_issues (show if false)
-    //   - forks_count
-    //   - open_issues_count
-    //   - subscribers_count
     return this.getRepo(repo).then(function (data) {
+
       return {
         is_fork:          data.fork,
-        created_at:       data.create_at,
+        created_at:       data.created_at,
         updated_at:       data.updated_at,
         pushed_at:        data.pushed_at,
+        prettyCreatedAt:  prettyDate.format(new Date(data.created_at)),
+        prettyUpdatedAt:  prettyDate.format(new Date(data.updated_at)),
+        prettyPushedAt:  prettyDate.format(new Date(data.pushed_at)),
         stargazers_count: data.stargazers_count,
         watchers_count:   data.watchers_count,
         has_issues:       data.has_issues,
@@ -49,6 +47,7 @@ module.exports = {
         open_issues_count: data.open_issues_count,
         subscribers_count: data.subscribers_count
       };
+
     });
   }
 };

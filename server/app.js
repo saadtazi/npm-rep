@@ -34,7 +34,6 @@ if (env === 'dev') {
   console.log('live reload!');
   app.use(require('connect-livereload')({
     port: 35729,
-    // src: '/bower_components/livereload/dist/livereload.js?snipver=1',
     excludeList: []
   }));
 
@@ -76,13 +75,30 @@ app.get('/api/packages/:packageName', function (req, res){
 app.get('/api/package-stats/:packageName', function (req, res){
   npm.getPackageStats(req.params.packageName).then(
     function (packageStats) {
+      var gitHubInfo = null,
+      repoUrl = packageStats.repositoryUrl || '';
+          isGithub = github.isGithub(repoUrl);
+      if (isGithub) {
+        gitHubInfo = github.getRepoStats(github.parseUrl(repoUrl));
+      }
+      return [packageStats, gitHubInfo];
+    }).spread(function(packageStats, gitHubInfo) {
+      try {
+        if (gitHubInfo) {
+          packageStats.github = gitHubInfo;
+        }
+      } catch (e) {
+        console.log(e);
+      }
       res.json(packageStats);
+
+
     }).fail(function (err) {
       res.json({error: err});
     });
 });
 
-app.get('/api/repos/:owner/:repo/stats', function (req, res){
+app.get('/api/repos/:owner/:repo', function (req, res){
   github.getRepoStats({
     user: req.params.owner,
     repo: req.params.repo

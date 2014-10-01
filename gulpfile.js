@@ -24,7 +24,7 @@ gulp.task('templates', function () {
         .pipe($.handlebars())
         .pipe($.defineModule('plain'))
         .pipe($.declare({
-            namespace: 'MyApp.templates' // change this to whatever you want
+            namespace: 'MyApp.templates'
         }))
         .pipe(gulp.dest('server/.tmp/templates'));
 });
@@ -111,7 +111,7 @@ gulp.task('connect', function () {
 });
 
 gulp.task('serve', ['connect', 'styles', 'templates'], function () {
-    require('opn')('http://localhost:9000');
+    //require('opn')('http://localhost:9000');
 });
 
 // inject bower components
@@ -149,7 +149,8 @@ gulp.task('watch', ['connect', 'serve'], function () {
     });
 
     // gulp.watch('server/public/styles/**/*.scss', ['styles']);
-    gulp.watch('server/{templates,views}/**/*.hbs', ['html', 'distviews']);
+    gulp.watch('server/templates/**/*.hbs', ['templates', 'html', 'distviews']);
+    gulp.watch('server/views/**/*.hbs', ['templates', 'html', 'distviews']);
     gulp.watch('server/public/styles/**/*.less', ['styles']);
     gulp.watch('server/public/scripts/**/*.js', ['scripts']);
     gulp.watch('server/public/images/**/*', ['images']);

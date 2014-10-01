@@ -1,0 +1,98 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{name}}
+    <button type="button" class="close pull-right delete">
+      <span aria-hidden="true">&times;</span>
+      <span class="sr-only">Close</span>
+    </button>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <p>{{description}}</p>
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-clock-o fa-5x"></i>
+            <div class="fact-label">package created</div>
+            <div class="fact-text">{{prettyCreated}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-clock-o fa-5x"></i>
+            <div class="fact-label">package modified</div>
+            <div class="fact-text">{{prettyModified}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-cog fa-5x"></i>
+            <div class="fact-label">last version</div>
+            <div class="fact-text">{{lastVersion}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-info-circle fa-5x"></i>
+            <ul class="list-unstyled">
+            {{#homePage}}<li class="fact-label"><a href="{{.}}" class="button">homepage</a></li>{{/homePage}}
+            {{#repositoryUrl}}<li class="fact-label"><a href="{{.}}" class="button">repo</a></li>{{/repositoryUrl}}
+            {{#authorName}}<li class="fact-label">by {{.}}</a></li>{{/authorName}}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{#github}}
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-star-o fa-5x"></i>
+            <div class="fact-label">stargazers</div>
+            <div class="fact-text">{{stargazers_count}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-eye fa-5x"></i>
+            <div class="fact-label">watchers</div>
+            <div class="fact-text">{{watchers_count}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-code-fork fa-5x"></i>
+            <div class="fact-label">forks</div>
+            <div class="fact-text">{{forks_count}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="panel panel-default">
+          <div class="panel-body package-fact">
+            <i class="fa fa-code fa-5x"></i>
+            <div class="fact-label">last repo update</div>
+            <div class="fact-text">{{prettyUpdatedAt}}</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    {{/github}}
+
+  </div>
+
+
+</div>
