@@ -13,8 +13,13 @@ var app = express(),
     env = process.env.NODE_ENV || 'dev';
     templatePath = 'distviews';
 
+app.set('googleTrackingId', 'UA-19270982-5')
+
 if (env === 'dev') {
   templatePath = 'views';
+  app.set('googleTrackingId', 'UA-19270982-5-NONO')
+}
+if (env == 'production') {
 }
 
 app.engine('.hbs', exphbs({
@@ -135,6 +140,6 @@ app.get('/api/repos/:owner/:repo', function (req, res){
 // https://api.github.com/repos/saadtazi/firefox-profile-js/contributors
 
 
-var server = app.listen(9000, function() {
+var server = app.listen(process.env.NODE_PORT || 9000, function() {
     console.log('Listening on port %d', server.address().port);
 });

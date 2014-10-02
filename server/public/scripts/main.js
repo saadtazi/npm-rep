@@ -96,7 +96,7 @@ $(function() {
   var AppView = Backbone.View.extend({
     el: '#app',
     initialize: function() {
-      var spinner = $('#spinner');
+      var spinner = $('#spinner-modal');
       this.searchView = new SearchView({ el: '#search-input' });
       this.searchView.on('packageSelected', this.addPackage, this);
 
