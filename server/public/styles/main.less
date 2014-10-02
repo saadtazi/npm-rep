@@ -1,6 +1,6 @@
 
 // bower:less
-@import "../bower_components/bootstrap/less/bootstrap.less";
+@import "./custom-bootstrap.less";
 @import "../bower_components/components-font-awesome/less/font-awesome.less";
 // endbower
 
@@ -21,17 +21,32 @@ body {
     padding-bottom: 20px;
 }
 
-/* Custom page footer */
+/* Custom page sticky footer */
+@import './footer.less';
+
 .footer {
-    padding-top: 19px;
+  padding-top: 20px;
+
+  .github-link {
     color: #777;
-    border-top: 1px solid #e5e5e5;
+    &:hover, &:focus {
+      color: #333;
+    }
+  }
+}
+
+// spinner hidden by default
+.spinner {
+  // display: none;
+  color: #fff;
+
 }
 
 // package info
-.package-fact {
+.panel.package-fact {
   background-color: transparent;
   min-height: 85px;
+
 
   .fact-label {
     z-index: 2;
@@ -41,6 +56,7 @@ body {
     .h4;
   }
   i.fa {
+    z-index: -1;
     position: absolute;
     top: 7px;
     right: 25px;

@@ -1,4 +1,4 @@
-/* global Backbone,Bloodhound, _ */
+/* global Backbone,Bloodhound, _, MyApp */
 $(function() {
   'use strict';
 
@@ -16,13 +16,20 @@ $(function() {
     // does not work, not sure why...
     events: {
       'typeahead:selected': 'packageSelected',
-      'typeahead:autocompleted': 'packageSelected'
+      'typeahead:autocompleted': 'packageSelected',
+      'submit #search-form': 'formSubmitted'
     },
 
     packageSelected: function(e, item) {
-      console.log('addToList::', arguments);
-      console.log(arguments);
-      var packageStat = new PackageStat({name: item.value});
+      this.sendPackage(item.value);
+    },
+
+    formSubmitted: function () {
+      this.sendPacakge(this.$el.val());
+    },
+
+    sendPackage: function (packageName) {
+      var packageStat = new PackageStat({name: packageName});
       packageStat.fetch().then(_.bind(function() {
         this.trigger('packageSelected', packageStat);
       }, this));
@@ -36,6 +43,7 @@ $(function() {
         // prefetch: '../data/films/post_1960.json',
         remote: {
           url: '/api/packages?q=%QUERY',
+          ajax: {global: false},
           filter: function(parsedResponse) {
               return parsedResponse && parsedResponse.items;
           }
@@ -88,44 +96,23 @@ $(function() {
   var AppView = Backbone.View.extend({
     el: '#app',
     initialize: function() {
+      var spinner = $('#spinner');
       this.searchView = new SearchView({ el: '#search-input' });
       this.searchView.on('packageSelected', this.addPackage, this);
 
       this.packageList = new PackageStats([]);
       this.listView = new PackageListView({collection: this.packageList});
-      // debug
-//       this.packageList.add(
 
-// {
-//   "name": "grunt-koko",
-//   "description": "grunt plugin to start koko as task.",
-//   "lastVersion": "0.2.1",
-//   "created": "2013-04-09T14:58:27.686Z",
-//   "modified": "2014-07-11T03:33:31.163Z",
-//   "prettyCreated": "1 year ago",
-//   "prettyModified": "2 months ago",
-//   "repository": {
-//     "type": "git",
-//     "url": "git@github.com:fnobi/grunt-koko.git"
-//   },
-//   "repositoryUrl": "git@github.com:fnobi/grunt-koko.git",
-//   "author": {
-//     "name": "Fujisawa Shin"
-//   },
-//   "authorName": "Fujisawa Shin",
-//   "github": {
-//     "is_fork": false,
-//     "updated_at": "2014-07-11T03:31:48Z",
-//     "pushed_at": "2014-07-11T03:33:53Z",
-//     "stargazers_count": 0,
-//     "watchers_count": 0,
-//     "has_issues": true,
-//     "forks_count": 2,
-//     "open_issues_count": 0,
-//     "subscribers_count": 2
-//   }
-// })
+      // spinner
+      $(document).ajaxStart(function(){
+        spinner.modal('show');
+      });
+      $(document).ajaxComplete(function(){
+        spinner.modal('hide');
+      });
+
     },
+
     addPackage: function (pkg) {
       this.packageList.add(pkg);
     }
