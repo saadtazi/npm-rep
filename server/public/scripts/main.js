@@ -87,7 +87,7 @@ $(function() {
     },
     add: function (pkg) {
       var packageView = new PackageView({model: pkg});
-      this.$el.append(packageView.render().$el);
+      this.$el.prepend(packageView.render().$el);
     }
 
   });
