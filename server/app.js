@@ -19,8 +19,6 @@ if (env === 'dev') {
   templatePath = 'views';
   app.set('googleTrackingId', 'UA-19270982-5-NONO')
 }
-if (env == 'production') {
-}
 
 app.engine('.hbs', exphbs({
   extname: '.hbs',
