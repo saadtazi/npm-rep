@@ -45,7 +45,8 @@ module.exports = {
         has_issues:       data.has_issues,
         forks_count:      data.forks_count,
         open_issues_count: data.open_issues_count,
-        subscribers_count: data.subscribers_count
+        subscribers_count: data.subscribers_count,
+        david_dm_url: 'https://david-dm.org/' + repo.user + '/' + repo.repo
       };
 
     });

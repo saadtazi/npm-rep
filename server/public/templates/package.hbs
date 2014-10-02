@@ -42,6 +42,11 @@
           <div class="panel-body">
             <i class="fa fa-info-circle fa-5x"></i>
             <ul class="list-unstyled">
+            {{#github.david_dm_url}}
+            <li class="fact-label">
+              <a href="{{.}}" class="button"><img src="{{.}}.svg?style=flat"></a>
+            </li>
+            {{/github.david_dm_url}}
             {{#homePage}}<li class="fact-label"><a href="{{.}}" class="button">homepage</a></li>{{/homePage}}
             {{#repositoryUrl}}<li class="fact-label"><a href="{{.}}" class="button">repo</a></li>{{/repositoryUrl}}
             {{#authorName}}<li class="fact-label">by {{.}}</a></li>{{/authorName}}
