@@ -1,10 +1,14 @@
-<div class="panel panel-default package-fact">
+<div class="panel panel-default package-info">
   <div class="panel-heading">
-    <h3 class="panel-title">{{name}}
-    <button type="button" class="close pull-right delete">
-      <span aria-hidden="true">&times;</span>
-      <span class="sr-only">Close</span>
-    </button>
+    <h3 class="panel-title">
+      {{name}}
+      <div class="likedBtn{{#liked}} liked{{/liked}}">
+        <i class="fa fa-heart" title="like"></i>
+      </div>
+      <button type="button" class="close pull-right delete">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
     </h3>
   </div>
   <div class="panel-body">
