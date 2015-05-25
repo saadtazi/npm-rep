@@ -73,7 +73,6 @@ module.exports = {
 
     return this.getPackage(packageName).then(function(data) {
       try {
-        console.log(data);
         var lastVersion = data['dist-tags'].latest;
         lastPackage = data.versions[lastVersion];
         return {
