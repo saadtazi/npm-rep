@@ -1,10 +1,11 @@
-var npm = require('npm'),
-    q = require('q'),
-    request = require('request'),
-    prettyDate = require('pretty-date'),
+var q = require('q'),
+  request = require('request'),
+  prettyDate = require('pretty-date'),
+  _ = require('lodash'),
 
-    registryUrl = 'https://registry.npmjs.org/',
-    typeAheadUrl = 'https://typeahead.npmjs.com/search';
+  npmData = require('./npm-data'),
+  registryUrl = 'https://registry.npmjs.org/',
+  typeAheadUrl = 'https://typeahead.npmjs.com/search';
 
 // required for oldSearch... that is too slow...
 // var npmLoadedDefer = q.defer(),
@@ -19,39 +20,60 @@ module.exports = {
   // too slow
   // oldSearch: function (query) {
   // npmLoaded.then(function () {
-    //   npm.commands.search([query], function (err, packages) {
-    //     if (err) { searchDef.reject(err); return; }
-    //     // why there are no rest api... why... why...
+  //   npm.commands.search([query], function (err, packages) {
+  //     if (err) { searchDef.reject(err); return; }
+  //     // why there are no rest api... why... why...
 
-    //     searchDef.resolve(packages);
-    //   });
-    // });
+  //     searchDef.resolve(packages);
+  //   });
+  // });
   // }
-  search: function (query) {
-    var searchDef = q.defer();
-    request.get({url: typeAheadUrl, qs: {q: query}, json:true}, function (e, r, data) {
-      if (e) { searchDef.reject(e); return; }
-      // searchDef.resolve(data.map(function(item) { return item.value; }));
-      searchDef.resolve(data);
-    });
+  search: function(query) {
+    var pattrn = new RegExp('^' + query, 'i');
+    return q.resolve(_.filter(
+      npmData.packageNames, function(pack) {
+        return pattrn.test(pack);
+      }
+    ).slice(0, 10));
 
-    return searchDef.promise;
+    // the npm typeahead url no longer works...
+
+    // var searchDef = q.defer();
+    // request.get({
+    //   url: typeAheadUrl,
+    //   qs: {
+    //     q: query
+    //   },
+    //   json: true
+    // }, function(e, r, data) {
+    //     if (e) {
+    //       searchDef.reject(e); return;
+    //     }
+    //     // searchDef.resolve(data.map(function(item) { return item.value; }));
+    //     searchDef.resolve(data);
+    //   });
+    // return searchDef.promise;
   },
 
-  getPackage: function (packageName) {
+  getPackage: function(packageName) {
     var infoDef = q.defer();
-    request.get({url: registryUrl + packageName, json:true}, function (e, r, data) {
-      if (e) { infoDef.reject(e); return; }
-      infoDef.resolve(data);
-    });
+    request.get({
+      url: registryUrl + packageName,
+      json: true
+    }, function(e, r, data) {
+        if (e) {
+          infoDef.reject(e); return;
+        }
+        infoDef.resolve(data);
+      });
     return infoDef.promise;
   },
 
-  getPackageStats: function (packageName) {
+  getPackageStats: function(packageName) {
 
-    return this.getPackage(packageName).then(
-      function (data) {
-        try {
+    return this.getPackage(packageName).then(function(data) {
+      try {
+        console.log(data);
         var lastVersion = data['dist-tags'].latest;
         lastPackage = data.versions[lastVersion];
         return {
@@ -70,8 +92,10 @@ module.exports = {
           author: data.author,
           authorName: data.author && data.author.name
         };
-      } catch (e) {console.log('err', e);}
+      } catch ( e ) {
+        console.log('err', e);
       }
+    }
     );
     return statsDef.promise;
   }

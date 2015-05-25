@@ -1,17 +1,17 @@
 var path = require('path'),
 
-    express = require('express'),
-    serveStatic = require('serve-static'),
-    exphbs  = require('express-handlebars'),
+  express = require('express'),
+  serveStatic = require('serve-static'),
+  exphbs = require('express-handlebars'),
 
-    npm = require('./models/npm'),
-    github = require('./models/github');
+  npm = require('./models/npm'),
+  github = require('./models/github');
 
 
 
 var app = express(),
-    env = process.env.NODE_ENV || 'dev';
-    templatePath = 'distviews';
+  env = process.env.NODE_ENV || 'dev';
+templatePath = 'distviews';
 
 app.set('googleTrackingId', 'UA-19270982-5')
 
@@ -48,96 +48,87 @@ if (env === 'dev') {
 
 /////////////////
 // routes
-app.get('/', function(req, res){
+app.get('/', function(req, res) {
   res.render('index');
 });
 
 // search package names
-app.get('/api/packages', function (req, res){
+app.get('/api/packages', function(req, res) {
   var q = req.query.q;
-  if (!q) { return res.json({});}
-  npm.search('*' + q).then(
-    function (packages) {
-      res.json({items: packages});
-    }).fail(
-    function (err) {
-      res.json({error: err});
+  if (!q) {
+    return res.json({});
+  }
+  npm.search(q).then(function(packages) {
+    res.json({
+      items: packages
     });
+  }).fail(function(err) {
+    res.json({
+      error: err
+    });
+  });
 
 });
 
-app.get('/api/packages/:packageName', function (req, res){
-  npm.getPackage(req.params.packageName).then(
-    function (packageInfo) {
-      res.json(packageInfo);
-    }).fail(function (err) {
-      res.json({error: err});
+app.get('/api/packages/:packageName', function(req, res) {
+  npm.getPackage(req.params.packageName).then(function(packageInfo) {
+    res.json(packageInfo);
+  }).fail(function(err) {
+    res.json({
+      error: err
     });
+  });
 });
 
-app.get('/api/package-stats/:packageName', function (req, res){
-  npm.getPackageStats(req.params.packageName).then(
-    function (packageStats) {
-      var gitHubInfo = null,
+app.get('/api/package-stats/:packageName', function(req, res) {
+  npm.getPackageStats(req.params.packageName).then(function(packageStats) {
+    var gitHubInfo = null,
       repoUrl = packageStats.repositoryUrl || '';
-          isGithub = github.isGithub(repoUrl);
-      if (isGithub) {
-        gitHubInfo = github.getRepoStats(github.parseUrl(repoUrl));
+    isGithub = github.isGithub(repoUrl);
+    if (isGithub) {
+      gitHubInfo = github.getRepoStats(github.parseUrl(repoUrl));
+    }
+    return [packageStats, gitHubInfo];
+  }).spread(function(packageStats, gitHubInfo) {
+    try {
+      if (gitHubInfo) {
+        packageStats.github = gitHubInfo;
       }
-      return [packageStats, gitHubInfo];
-    }).spread(function(packageStats, gitHubInfo) {
-      try {
-        if (gitHubInfo) {
-          packageStats.github = gitHubInfo;
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      res.json(packageStats);
+    } catch ( e ) {
+      console.log(e);
+    }
+    res.json(packageStats);
 
 
-    }).fail(function (err) {
-      res.json({error: err});
+  }).fail(function(err) {
+    res.json({
+      error: err
     });
+  });
 });
 
-app.get('/api/repos/:owner/:repo', function (req, res){
+app.get('/api/repos/:owner/:repo', function(req, res) {
   github.getRepoStats({
     user: req.params.owner,
     repo: req.params.repo
-  }).then(
-    function (data) {
-      res.json(data);
-    },
-    function (err) {
-      console.log(promise.inspect());
-      res.json({error: err});
+  }).then(function(data) {
+    res.json(data);
+  }, function(err) {
+      res.json({
+        error: err
+      });
     });
 });
 
-// https://registry.npmjs.org/fakr
-//   - number of versions
-//   - time.versions[last] // use semver or dist-tags.latest
-//   - repo: if repo.url contains github.com, ask for github repo info
-
-// https://api.npmjs.org/downloads/point/2014-09-01:2014-09-10/fakr
-//   - last week download
-// https://developer.github.com/v3/repos/#get
-//   ex: https://api.github.com/repos/saadtazi/fakr-node
-//   - fork: false (show only if true)
-//   - created_at
-//   - updated_at
-//   - pushed_at
-//   - stargazers_count
-//   - watchers_count
-//   - has_issues (show if false)
-//   - forks_count
-//   - open_issues_count
-//   - subscribers_count
-
-// https://api.github.com/repos/saadtazi/firefox-profile-js/contributors
-
+var npmData = require('./models/npm-data');
+app.get('/_refresh', function(req, res) {
+  npmData.refresh().then(function(packs) {
+    res.json({
+      total: packs.length
+    });
+  })
+});
 
 var server = app.listen(process.env.NODE_PORT || 9000, function() {
-    console.log('Listening on port %d', server.address().port);
+  console.log('Listening on port %d', server.address().port);
 });
