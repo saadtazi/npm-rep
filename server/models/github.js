@@ -33,7 +33,7 @@ module.exports = {
 
   getRepoStats: function(repo) {
     var def = q.defer();
-    return this.getRepo(repo).then(function(data) {
+    this.getRepo(repo).then(function(data) {
 
       def.resolve({
         is_fork: data.fork,
