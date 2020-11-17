@@ -2,16 +2,17 @@
   "name": "caniuse",
   "version": "0.0.0",
   "dependencies": {
-    "serve-static": "~1.6.3",
+    "bower": "^1.8.8",
     "express": "4.x",
     "express-handlebars": "~1.1.0",
     "github": "~0.2.2",
-    "npmconf": "~2.1.0",
-    "q": "~1.0.1",
-    "npm": "~2.0.2",
     "lodash": "~2.4.1",
+    "npm": "~2.0.2",
+    "npmconf": "~2.1.0",
+    "pretty-date": "~0.2.0",
+    "q": "~1.0.1",
     "request": "~2.44.0",
-    "pretty-date": "~0.2.0"
+    "serve-static": "~1.6.3"
   },
   "devDependencies": {
     "connect": "^2.14.4",
