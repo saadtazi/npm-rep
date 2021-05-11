@@ -6,7 +6,7 @@
     "express": "4.x",
     "express-handlebars": "~1.1.0",
     "github": "~0.2.2",
-    "lodash": "~2.4.1",
+    "lodash": "~4.17.21",
     "npm": "~2.0.2",
     "npmconf": "~2.1.0",
     "pretty-date": "~0.2.0",
