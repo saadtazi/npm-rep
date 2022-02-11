@@ -4,7 +4,7 @@
   "dependencies": {
     "bower": "^1.8.8",
     "express": "4.x",
-    "express-handlebars": "~1.1.0",
+    "express-handlebars": "~5.3.1",
     "github": "~0.2.2",
     "lodash": "~2.4.1",
     "npm": "~2.0.2",
